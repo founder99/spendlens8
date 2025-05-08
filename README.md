@@ -1,36 +1,146 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SpendLens — AI Spend Auditor
 
-## Getting Started
+> Find out exactly how much your team is overpaying for AI tools. Get a free, personalized audit in 2 minutes.
 
-First, run the development server:
+**Live demo:** [spendlens.vercel.app](https://spendlens.vercel.app)
+
+---
+
+## What it does
+
+SpendLens audits your AI tool stack and surfaces:
+
+- **Overkill plans** — paying for Enterprise when Pro covers your needs
+- **Unused seats** — licenses nobody is using
+- **Cheaper alternatives** — tools that do the same job for less
+- **Exact savings** — monthly and annual dollar amounts per tool
+
+After the audit:
+- An LLM generates a plain-English executive summary
+- Results are stored with a permanent shareable URL (`/audit/[id]`)
+- Lead info (email, company, role) is captured and a report link is emailed
+
+---
+
+## Screenshots
+
+| Landing | Audit Form | Results |
+|---|---|---|
+| ![Landing](public/screenshots/landing.png) | ![Form](public/screenshots/form.png) | ![Results](public/screenshots/results.png) |
+
+---
+
+## Tech stack
+
+| Layer | Choice | Why |
+|---|---|---|
+| Framework | Next.js 15 App Router | Server Actions, RSC, file-based routing |
+| Language | TypeScript (strict) | Type safety across engine + UI |
+| Styling | Tailwind CSS + shadcn/ui | Fast, consistent, accessible |
+| Database | Supabase (Postgres) | Instant REST API, RLS, free tier |
+| Email | Resend | Simple API, 3k free emails/mo |
+| AI | Anthropic / OpenAI | Pluggable abstraction, fallback template |
+| Validation | Zod + React Hook Form | End-to-end type-safe forms |
+| Testing | Vitest | Fast, ESM-native |
+| Deployment | Vercel | Zero-config Next.js |
+
+---
+
+## Local setup
+
+### 1. Clone and install
+
+```bash
+git clone https://github.com/your-username/spendlens
+cd spendlens
+npm install
+```
+
+### 2. Configure environment
+
+```bash
+cp .env.local.example .env.local
+```
+
+Fill in `.env.local`:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+ANTHROPIC_API_KEY=your_anthropic_key        # optional
+OPENAI_API_KEY=your_openai_key              # optional
+RESEND_API_KEY=your_resend_key              # optional
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+At least one AI key is needed for AI summaries. If neither is set, a deterministic fallback template is used.
+
+### 3. Set up Supabase
+
+Run `lib/db/schema.sql` in your Supabase SQL editor:
+
+```sql
+-- Creates the audits table with RLS policies
+-- See lib/db/schema.sql for full migration
+```
+
+### 4. Run
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Running tests
 
-## Learn More
+```bash
+npm run test:run     # single run
+npm run test         # watch mode
+```
 
-To learn more about Next.js, take a look at the following resources:
+14 tests covering the audit engine — savings calculations, rule evaluation, edge cases.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment (Vercel)
 
-## Deploy on Vercel
+1. Push to GitHub
+2. Import project at [vercel.com/new](https://vercel.com/new)
+3. Add all environment variables from `.env.local`
+4. Deploy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Project structure
+
+```
+app/                    # Next.js App Router pages
+  audit/[id]/           # Public shareable audit page
+  results/[id]/         # Private results page (lead-gated)
+  api/audit/            # REST endpoint (wraps server action)
+  api/summary/          # Regenerate AI summary endpoint
+components/ui/          # shadcn/ui components
+features/
+  audit/                # Audit form components
+  results/              # Savings chart
+  lead-capture/         # Lead modal
+lib/
+  audit-engine/         # Rule-based audit logic (engine + rules)
+  ai/                   # LLM abstraction (Anthropic / OpenAI / fallback)
+  db/                   # Supabase queries
+  email/                # Resend email sender
+  pricing/              # Tool pricing data
+  utils/                # Zod schemas, localStorage hook
+types/                  # Shared TypeScript types
+tests/                  # Vitest test suite
+```
+
+---
+
+## Architecture decisions
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for full reasoning.
