@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -57,13 +57,21 @@ export function AuditForm() {
 
   const form = useForm<AuditFormValues>({
     resolver: zodResolver(auditFormSchema),
-    defaultValues: storedData ?? { tools: [DEFAULT_TOOL] },
+    defaultValues: { tools: [DEFAULT_TOOL] },
   });
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "tools",
   });
+
+  // Once localStorage is hydrated, reset form with stored values
+  useEffect(() => {
+    if (hydrated && storedData) {
+      form.reset(storedData);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrated]);
 
   // Persist to localStorage on every change
   form.watch((val) => {

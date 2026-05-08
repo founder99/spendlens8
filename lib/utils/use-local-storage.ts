@@ -1,19 +1,20 @@
 "use client";
 
-import { useState } from "react";
-
-function readStorage<T>(key: string, initialValue: T): T {
-  if (typeof window === "undefined") return initialValue;
-  try {
-    const stored = localStorage.getItem(key);
-    return stored ? (JSON.parse(stored) as T) : initialValue;
-  } catch {
-    return initialValue;
-  }
-}
+import { useState, useEffect } from "react";
 
 export function useLocalStorage<T>(key: string, initialValue: T) {
-  const [value, setValue] = useState<T>(() => readStorage(key, initialValue));
+  const [value, setValue] = useState<T>(initialValue);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(key);
+      if (stored) setValue(JSON.parse(stored) as T);
+    } catch {
+      // ignore parse errors
+    }
+    setHydrated(true);
+  }, [key]);
 
   const set = (next: T) => {
     setValue(next);
@@ -29,6 +30,5 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
     localStorage.removeItem(key);
   };
 
-  // hydrated is always true now since we read on init
-  return { value, set, clear, hydrated: true };
+  return { value, set, clear, hydrated };
 }
