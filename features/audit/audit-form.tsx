@@ -100,7 +100,7 @@ export function AuditForm() {
       <div className="mb-8">
         <h2 className="text-2xl font-bold tracking-tight">Your AI Stack</h2>
         <p className="text-muted-foreground">
-          Enter the AI tools your team currently pays for. We'll cross-reference with our
+          Enter the AI tools your team currently pays for. We&apos;ll cross-reference with our
           pricing database to find overkill plans and unused seats.
         </p>
       </div>

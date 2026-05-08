@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Sparkles, Copy, ExternalLink, Check, BarChart2 } from "lucide-react";
 
 import { LeadModal } from "@/features/lead-capture/lead-modal";
@@ -12,11 +12,11 @@ import type { StoredAudit } from "@/types";
 export function ResultsClient({ audit }: { audit: StoredAudit }) {
   const [showModal, setShowModal] = useState(!audit.email);
   const [isCopied, setIsCopied] = useState(false);
-  const [shareableUrl, setShareableUrl] = useState(`/audit/${audit.id}`);
 
-  useEffect(() => {
-    setShareableUrl(`${window.location.origin}/audit/${audit.id}`);
-  }, [audit.id]);
+  const shareableUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/audit/${audit.id}`
+      : `https://spendlens.vercel.app/audit/${audit.id}`;
 
   const handleCopy = async () => {
     try {

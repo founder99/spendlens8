@@ -91,7 +91,7 @@ export default function HomePage() {
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
           Stop overpaying for
           <br />
-          <span className="text-muted-foreground">AI tools you don't need</span>
+          <span className="text-muted-foreground">AI tools you don&apos;t need</span>
         </h1>
         <p className="mt-6 max-w-xl text-lg text-muted-foreground">
           SpendLens audits your entire AI stack in 2 minutes. Find unused seats,
@@ -120,7 +120,7 @@ export default function HomePage() {
             {SOCIAL_PROOF.map((item) => (
               <Card key={item.name} className="border-border/50">
                 <CardContent className="pt-6">
-                  <p className="text-sm leading-relaxed">"{item.quote}"</p>
+                  <p className="text-sm leading-relaxed">&ldquo;{item.quote}&rdquo;</p>
                   <div className="mt-4">
                     <p className="text-sm font-medium">{item.name}</p>
                     <p className="text-xs text-muted-foreground">{item.company}</p>

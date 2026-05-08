@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { CheckCircle2, TrendingDown, DollarSign, Sparkles } from "lucide-react";
-import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 
 import { getAuditById } from "@/lib/db/audits";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -16,8 +16,7 @@ interface Props {
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(
-  { params }: Props,
-  _parent: ResolvingMetadata
+  { params }: Props
 ): Promise<Metadata> {
   const { id } = await params;
   const audit = await getAuditById(id);

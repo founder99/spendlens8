@@ -122,7 +122,7 @@ export function LeadModal({ auditId, isOpen, onComplete }: LeadModalProps) {
               )}
             </Button>
             <p className="mt-3 text-center text-xs text-muted-foreground">
-              No spam. We'll send you a link to this report so you can share it.
+              No spam. We&apos;ll send you a link to this report so you can share it.
             </p>
           </div>
         </form>
