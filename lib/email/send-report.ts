@@ -1,8 +1,16 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM = "SpendLens <onboarding@resend.dev>";
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://spendlens8.vercel.app";
+
+function createTransporter() {
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_APP_PASSWORD,
+    },
+  });
+}
 
 export async function sendAuditReportEmail({
   to,
@@ -15,12 +23,16 @@ export async function sendAuditReportEmail({
   monthlySavings: number;
   annualSavings: number;
 }): Promise<void> {
-  if (!process.env.RESEND_API_KEY) return;
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    console.log("[email] Gmail credentials not set — skipping");
+    return;
+  }
 
   const reportUrl = `${APP_URL}/audit/${auditId}`;
+  const transporter = createTransporter();
 
-  await resend.emails.send({
-    from: FROM,
+  await transporter.sendMail({
+    from: `"SpendLens" <${process.env.GMAIL_USER}>`,
     to,
     subject: `Your AI spend audit — $${annualSavings}/yr in potential savings`,
     html: `
@@ -36,7 +48,7 @@ export async function sendAuditReportEmail({
       <h1 style="font-size:22px;font-weight:700;color:#111;margin:0 0 8px;">Your audit report is ready</h1>
       <p style="color:#6b7280;font-size:15px;line-height:1.6;margin:0 0 24px;">
         We found <strong style="color:#111;">$${monthlySavings}/month</strong> in potential savings
-        across your AI tool stack — that's <strong style="color:#16a34a;">$${annualSavings}/year</strong>.
+        across your AI tool stack — that is <strong style="color:#16a34a;">$${annualSavings}/year</strong>.
       </p>
     </div>
     <div style="padding:0 32px 24px;">
@@ -61,4 +73,6 @@ export async function sendAuditReportEmail({
 </body>
 </html>`,
   });
+
+  console.log("[email] Sent successfully to", to);
 }
