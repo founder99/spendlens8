@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, useFieldArray, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -217,8 +217,11 @@ export function AuditForm() {
   });
 
   const watchedTools = useWatch({ control: form.control, name: "tools" });
-  // Persist to localStorage on every change
-  if (watchedTools) setStoredData({ tools: watchedTools } as AuditFormValues);
+
+  useEffect(() => {
+    if (watchedTools) setStoredData({ tools: watchedTools } as AuditFormValues);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(watchedTools)]);
 
   const onSubmit = async (data: AuditFormValues) => {
     setIsSubmitting(true);
