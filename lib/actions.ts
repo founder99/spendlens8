@@ -57,16 +57,20 @@ export async function captureLead(
   try {
     await updateAuditLead(auditId, parsed.data);
 
-    // Fire-and-forget email — don't block the response if it fails
     if (parsed.data.email) {
       const audit = await getAuditById(auditId);
       if (audit) {
-        sendAuditReportEmail({
-          to: parsed.data.email,
-          auditId,
-          monthlySavings: audit.total_monthly_savings,
-          annualSavings: audit.total_annual_savings,
-        }).catch((err) => console.error("Email send failed:", err));
+        try {
+          await sendAuditReportEmail({
+            to: parsed.data.email,
+            auditId,
+            monthlySavings: audit.total_monthly_savings,
+            annualSavings: audit.total_annual_savings,
+          });
+        } catch (err) {
+          console.error("[email] Failed to send:", err);
+          // don't fail the whole request if email fails
+        }
       }
     }
 
