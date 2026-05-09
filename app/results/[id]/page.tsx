@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, TrendingDown, DollarSign } from "lucide-react";
+import { ArrowLeft, CheckCircle2, TrendingDown, DollarSign, Sparkles, ExternalLink } from "lucide-react";
 
 import { getAuditById } from "@/lib/db/audits";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -26,6 +26,9 @@ export default async function ResultsPage({ params }: Props) {
 
   if (!audit) notFound();
 
+  const isWellOptimized = audit.total_monthly_savings < 100;
+  const isHighSavings = audit.total_monthly_savings >= 500;
+
   return (
     <div className="mx-auto w-full max-w-4xl space-y-10 px-4 py-12 sm:px-6 md:py-20">
       {/* Header */}
@@ -41,6 +44,60 @@ export default async function ResultsPage({ params }: Props) {
           <ArrowLeft className="mr-2 h-4 w-4" /> New Audit
         </Button>
       </div>
+
+      {/* Well-optimized banner */}
+      {isWellOptimized && (
+        <Card className="border-green-500/20 bg-green-500/5">
+          <CardContent className="flex items-start gap-4 pt-6">
+            <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-green-600" />
+            <div>
+              <p className="font-semibold text-green-700 dark:text-green-400">
+                You&apos;re spending well
+              </p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Your AI stack looks reasonably optimized. We found less than $100/mo in potential savings.
+                Sign up below to get notified when new optimizations apply to your stack — pricing changes frequently.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Credex CTA for high savings */}
+      {isHighSavings && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardContent className="pt-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <Badge className="mb-2 bg-primary/10 text-primary">
+                  <Sparkles className="mr-1 h-3 w-3" /> High savings opportunity
+                </Badge>
+                <h3 className="text-lg font-bold">
+                  You could save ${audit.total_annual_savings}/yr — Credex can help you capture more
+                </h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Credex sells discounted AI infrastructure credits — Cursor, Claude, ChatGPT Enterprise —
+                  sourced from companies that overforecast. Real discounts, same tools.
+                </p>
+              </div>
+              <Button
+                size="lg"
+                className="shrink-0"
+                render={
+                  <a
+                    href="https://credex.rocks"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  />
+                }
+              >
+                Book a Credex consultation
+                <ExternalLink className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-3">
@@ -82,8 +139,7 @@ export default async function ResultsPage({ params }: Props) {
         <h2 className="text-xl font-semibold">Per-Tool Breakdown</h2>
         <div className="space-y-4">
           {audit.tool_results.map((toolResult, idx) => {
-            const displayName =
-              TOOL_PRICING[toolResult.tool]?.displayName ?? toolResult.tool;
+            const displayName = TOOL_PRICING[toolResult.tool]?.displayName ?? toolResult.tool;
             return (
               <Card key={idx} className="border-border/50">
                 <CardHeader className="flex flex-row items-start justify-between gap-4 pb-2">
@@ -139,7 +195,7 @@ export default async function ResultsPage({ params }: Props) {
       </div>
 
       {/* Client: lead modal gate + AI summary + share */}
-      <ResultsClient audit={audit} />
+      <ResultsClient audit={audit} isWellOptimized={isWellOptimized} />
     </div>
   );
 }

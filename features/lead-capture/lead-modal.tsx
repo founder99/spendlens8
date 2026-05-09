@@ -24,10 +24,12 @@ interface LeadModalProps {
   auditId: string;
   isOpen: boolean;
   onComplete: () => void;
+  isWellOptimized?: boolean;
 }
 
-export function LeadModal({ auditId, isOpen, onComplete }: LeadModalProps) {
+export function LeadModal({ auditId, isOpen, onComplete, isWellOptimized }: LeadModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [honeypot, setHoneypot] = useState("");
 
   const form = useForm<LeadCaptureValues>({
     resolver: zodResolver(leadCaptureSchema),
@@ -35,6 +37,9 @@ export function LeadModal({ auditId, isOpen, onComplete }: LeadModalProps) {
   });
 
   const onSubmit = async (data: LeadCaptureValues) => {
+    // Honeypot check — bots fill hidden fields, humans don't
+    if (honeypot) return;
+
     setIsSubmitting(true);
     try {
       const result = await captureLead(auditId, data);
@@ -55,14 +60,29 @@ export function LeadModal({ auditId, isOpen, onComplete }: LeadModalProps) {
     <Dialog open={isOpen} onOpenChange={() => {}}>
       <DialogContent showCloseButton={false}>
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">Unlock your full report</DialogTitle>
+          <DialogTitle className="text-xl font-bold">
+            {isWellOptimized ? "Get notified of new optimizations" : "Unlock your full report"}
+          </DialogTitle>
           <DialogDescription>
-            Enter your details to view exact savings, per-tool recommendations, and your
-            AI-generated summary.
+            {isWellOptimized
+              ? "Your stack looks good. Enter your email and we'll notify you when new savings opportunities apply to your tools."
+              : "Enter your details to view exact savings, per-tool recommendations, and your AI-generated summary."}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="mt-2 space-y-4">
+          {/* Honeypot — hidden from real users, bots fill it */}
+          <input
+            type="text"
+            name="website"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+            style={{ display: "none" }}
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden="true"
+          />
+
           <div className="space-y-1.5">
             <Label htmlFor="email">
               Work Email <span className="text-destructive">*</span>
@@ -117,6 +137,8 @@ export function LeadModal({ auditId, isOpen, onComplete }: LeadModalProps) {
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Saving...
                 </>
+              ) : isWellOptimized ? (
+                "Notify Me"
               ) : (
                 "View My Savings Report"
               )}

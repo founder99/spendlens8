@@ -58,16 +58,12 @@ What I did NOT use AI for:
 
 ## 5. Self-rating
 
-**Overall: 7.5/10**
+**Discipline: 7/10** — Commits are spread across 6 distinct days with meaningful messages. I didn't start on day 1 (spent day 1 reading the spec carefully and planning), which cost me a day of buffer. The DEVLOG entries are honest and specific, not padded.
 
-Strong:
-- Audit engine is genuinely useful and well-tested
-- Architecture is clean and maintainable
-- TypeScript is strict throughout — zero `any` types
-- The shareable URL feature is a real product differentiator
+**Code quality: 8/10** — Zero TypeScript `any` types. All business logic is isolated in `lib/` with no React dependencies. The audit engine is fully unit-tested with 14 tests. The one weakness is the `useWatch` + `useEffect` pattern for localStorage persistence — it works but is more complex than it should be. A cleaner solution would use a custom `useFormPersist` hook.
 
-Could be better:
-- Pricing data covers only 10 tools — needs 30+ to be truly useful
-- No analytics instrumentation — can't measure funnel conversion
-- The AI summary is good but not great — a more specific prompt with tool-level context would improve it
-- Mobile layout on the results page is functional but not polished enough for a public launch
+**Design sense: 6/10** — The UI is clean and functional but not exceptional. It follows the Stripe/Linear aesthetic (minimal, good spacing, readable typography) but lacks the polish of a product that's been iterated on with real user feedback. The results page in particular could be more visually striking — the savings numbers should feel more celebratory.
+
+**Problem-solving: 8/10** — Debugged several non-obvious issues: the base-ui Select garbled text bug, the Vercel serverless function termination killing fire-and-forget emails, the hydration mismatch from `typeof window` checks. Each was solved by reading source code and understanding root causes rather than applying workarounds.
+
+**Entrepreneurial thinking: 7/10** — The GTM strategy is specific and realistic. The ECONOMICS math is honest about rough estimates. The user interviews surfaced a genuine insight (shareable URL is the killer feature, not the savings number). The Credex integration is well-motivated. What's missing: I haven't actually posted this anywhere or gotten real traction data, which would sharpen all of these estimates significantly.

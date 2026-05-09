@@ -34,6 +34,7 @@ export const TOOL_PRICING: Record<string, ToolPricing> = {
     tiers: {
       free: { name: "Free", monthlyPricePerSeat: 0, includedSeats: 1, features: ["Claude 3 Haiku"] },
       pro: { name: "Pro", monthlyPricePerSeat: 20, includedSeats: 1, features: ["Claude 3.5 Sonnet", "Priority access"] },
+      max: { name: "Max", monthlyPricePerSeat: 100, includedSeats: 1, features: ["5x more usage than Pro", "Claude 3.5 Sonnet", "Claude 3 Opus"] },
       team: { name: "Team", monthlyPricePerSeat: 25, includedSeats: 5, features: ["Claude 3.5 Sonnet", "Admin console"] },
       enterprise: { name: "Enterprise", monthlyPricePerSeat: 50, includedSeats: 1, features: ["All models", "SSO", "Audit logs"] },
     },
@@ -125,6 +126,35 @@ export const TOOL_PRICING: Record<string, ToolPricing> = {
       business: { name: "Business", monthlyPricePerSeat: 99, includedSeats: 1, features: ["Unlimited users", "API", "SSO"] },
     },
     alternatives: ["chatgpt", "claude"],
+  },
+  windsurf: {
+    id: "windsurf",
+    displayName: "Windsurf",
+    category: "coding",
+    tiers: {
+      free: { name: "Free", monthlyPricePerSeat: 0, includedSeats: 1, features: ["Limited completions"] },
+      pro: { name: "Pro", monthlyPricePerSeat: 15, includedSeats: 1, features: ["Unlimited completions", "GPT-4o", "Claude"] },
+      teams: { name: "Teams", monthlyPricePerSeat: 30, includedSeats: 1, features: ["All Pro", "Admin console", "SSO"] },
+    },
+    alternatives: ["cursor", "github_copilot"],
+  },
+  anthropic_api: {
+    id: "anthropic_api",
+    displayName: "Anthropic API (direct)",
+    category: "general",
+    tiers: {
+      payg: { name: "Pay-as-you-go", monthlyPricePerSeat: 0, includedSeats: 1, features: ["Claude 3 Haiku $0.25/MTok", "Claude 3.5 Sonnet $3/MTok", "Claude 3 Opus $15/MTok"] },
+    },
+    alternatives: ["claude", "openai_api"],
+  },
+  openai_api: {
+    id: "openai_api",
+    displayName: "OpenAI API (direct)",
+    category: "general",
+    tiers: {
+      payg: { name: "Pay-as-you-go", monthlyPricePerSeat: 0, includedSeats: 1, features: ["GPT-4o $2.50/MTok", "GPT-4o-mini $0.15/MTok", "o1 $15/MTok"] },
+    },
+    alternatives: ["chatgpt", "anthropic_api"],
   },
   perplexity: {
     id: "perplexity",

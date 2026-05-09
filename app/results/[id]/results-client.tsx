@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { StoredAudit } from "@/types";
 
-export function ResultsClient({ audit }: { audit: StoredAudit }) {
+export function ResultsClient({ audit, isWellOptimized }: { audit: StoredAudit; isWellOptimized?: boolean }) {
   const [showModal, setShowModal] = useState(!audit.email);
   const [isCopied, setIsCopied] = useState(false);
 
@@ -34,6 +34,7 @@ export function ResultsClient({ audit }: { audit: StoredAudit }) {
         auditId={audit.id}
         isOpen={showModal}
         onComplete={() => setShowModal(false)}
+        isWellOptimized={isWellOptimized}
       />
 
       <div

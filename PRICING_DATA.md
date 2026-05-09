@@ -142,7 +142,78 @@ Note: Business pricing estimated at $99/user/mo based on public reports.
 
 ---
 
-## Methodology
+## Windsurf (Codeium)
+
+**Source:** https://windsurf.com/pricing
+
+| Tier | Price | Notes |
+|---|---|---|
+| Free | $0/user/mo | Limited completions, basic models |
+| Pro | $15/user/mo | Unlimited completions, GPT-4o, Claude 3.5 Sonnet |
+| Teams | $30/user/mo | All Pro features, admin console, SSO |
+
+---
+
+## Anthropic API (direct)
+
+**Source:** https://www.anthropic.com/pricing
+
+| Model | Input | Output | Notes |
+|---|---|---|---|
+| Claude 3 Haiku | $0.25/MTok | $1.25/MTok | Fastest, cheapest |
+| Claude 3.5 Sonnet | $3/MTok | $15/MTok | Best balance |
+| Claude 3 Opus | $15/MTok | $75/MTok | Most capable |
+
+Note: API pricing is usage-based. Monthly cost depends on volume.
+
+---
+
+## OpenAI API (direct)
+
+**Source:** https://openai.com/api/pricing/
+
+| Model | Input | Output | Notes |
+|---|---|---|---|
+| GPT-4o | $2.50/MTok | $10/MTok | Latest flagship |
+| GPT-4o mini | $0.15/MTok | $0.60/MTok | Fast and cheap |
+| o1 | $15/MTok | $60/MTok | Reasoning model |
+
+Note: API pricing is usage-based. Monthly cost depends on volume.
+
+---
+
+## Claude (updated tiers)
+
+**Source:** https://www.anthropic.com/pricing
+
+| Tier | Price | Notes |
+|---|---|---|
+| Free | $0/user/mo | Claude 3 Haiku, limited usage |
+| Pro | $20/user/mo | Claude 3.5 Sonnet, priority access |
+| Max | $100/user/mo | 5x more usage than Pro, all models |
+| Team | $25/user/mo | Min 5 seats, admin console |
+| Enterprise | Custom (~$50/user/mo est.) | SSO, audit logs, custom limits |
+
+---
+
+## Abuse Protection
+
+SpendLens uses a **honeypot field** for bot protection on the lead capture form.
+
+- A hidden `<input type="text" name="website">` is added to the form
+- Real users never see or fill it (hidden via CSS)
+- Bots that auto-fill forms will populate it
+- If the field has any value on submission, the request is silently dropped
+
+**Why honeypot over rate limiting or hCaptcha:**
+- No user friction (hCaptcha adds ~3s and accessibility issues)
+- No infrastructure dependency (rate limiting needs Redis/KV)
+- Catches the vast majority of automated submissions at MVP scale
+- Can add rate limiting later if honeypot proves insufficient
+
+---
+
+
 
 1. All prices are monthly, billed monthly (not annual discount)
 2. Per-seat prices are per active user
