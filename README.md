@@ -4,6 +4,8 @@
 
 **Live demo:** [spendlens8.vercel.app](https://spendlens8.vercel.app)
 
+**GitHub:** [github.com/rishavjha006/spendlens](https://github.com/rishavjha006/spendlens)
+
 ---
 
 ## What it does
@@ -20,15 +22,7 @@ After the audit:
 - An LLM generates a plain-English executive summary
 - Results stored with a permanent shareable URL (`/audit/[id]`)
 - Lead info captured via email gate (shown after value, never before)
-- Report link emailed via Gmail SMTP
-
----
-
-## Screenshots
-
-| Landing | Audit Form | Results |
-|---|---|---|
-| ![Landing](public/screenshots/landing.png) | ![Form](public/screenshots/form.png) | ![Results](public/screenshots/results.png) |
+- Report link emailed to the user
 
 ---
 
@@ -40,7 +34,7 @@ After the audit:
 | Language | TypeScript (strict) | Type safety across engine + UI, no `any` |
 | Styling | Tailwind CSS + shadcn/ui | Fast, accessible, consistent |
 | Database | Supabase (Postgres) | Instant REST API, RLS, free tier |
-| Email | Nodemailer + Gmail SMTP | Free, sends to any address, no domain needed |
+| Email | Nodemailer SMTP | Free, sends to any address |
 | AI | Anthropic → OpenAI → fallback | Pluggable, graceful degradation |
 | Validation | Zod + React Hook Form | End-to-end type-safe forms |
 | Testing | Vitest | Fast, ESM-native, 14 tests |
@@ -51,8 +45,8 @@ After the audit:
 ## Quick start
 
 ```bash
-git clone https://github.com/founder99/spendlens8
-cd spendlens8
+git clone https://github.com/rishavjha006/spendlens
+cd spendlens
 npm install
 cp .env.local.example .env.local
 # Fill in .env.local with your credentials
@@ -66,8 +60,6 @@ Open [http://localhost:3000](http://localhost:3000).
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-GMAIL_USER=your_gmail@gmail.com
-GMAIL_APP_PASSWORD=your_16_char_app_password
 ANTHROPIC_API_KEY=optional_for_ai_summaries
 OPENAI_API_KEY=optional_fallback
 NEXT_PUBLIC_APP_URL=https://spendlens8.vercel.app
@@ -109,7 +101,7 @@ Five key trade-offs made during the build:
 
 3. **Email gate after value, not before** — Showing the audit results first (blurred) then asking for email converts better and is more honest. Users who see their savings number are motivated to unlock. Gating before showing value kills conversion.
 
-4. **Gmail SMTP over Resend** — Resend's free tier only sends to the account owner's email without a verified domain. Gmail SMTP sends to any address for free. Trade-off: Gmail has daily send limits (500/day) which is fine for MVP but would need upgrading at scale.
+4. **Nodemailer for transactional email** — Simple SMTP integration that sends to any address with no domain verification required. Trade-off: has daily send limits which would need upgrading at scale, but sufficient for MVP.
 
 5. **`useWatch` over `form.watch()` inside render** — React Compiler flags `form.watch()` as incompatible with memoization. Extracting each tool row into a `ToolRow` component using `useWatch` fixes the lint warning and improves render performance by isolating re-renders per row.
 
